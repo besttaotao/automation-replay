@@ -1,6 +1,6 @@
 {
   "name": "universal-macro-recorder",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "通用键鼠录制回放工具",
   "main": "src/main.js",
   "author": "BossAutomation",
