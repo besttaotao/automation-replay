@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UniversalMacroRecorder</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <h1>UniversalMacroRecorder</h1>
+          <div class="statusRow">
+            <span id="statusBadge">就绪</span>
+            <p id="statusText">点击“开始录制”完成一次操作；录制结束后会弹出保存名称，保存后即可执行。</p>
+          </div>
+        </div>
+        <div class="hotkeys">
+          <span>F8 停止录制</span>
+          <span>F9 停止回放</span>
+        </div>
+      </header>
+
+      <section class="guide">
+        <div><strong>1 录制</strong><span>点击开始录制，倒计时后去目标页面操作。</span></div>
+        <div><strong>2 自动保存</strong><span>录制结束后输入名称，模板固定保存到 macros。</span></div>
+        <div><strong>3 选择执行</strong><span>从模板列表选中 JSON，确认次数后执行。</span></div>
+      </section>
+
+      <section class="grid">
+        <section class="panel">
+          <h2><span class="stepNo">1</span>录制动作</h2>
+          <div class="actions">
+            <button id="recordBtn" class="primary">开始录制</button>
+            <button id="stopRecordBtn">停止录制</button>
+          </div>
+          <p class="hint">点击开始录制后有 3 秒倒计时。倒计时结束后，切到目标页面完成一次完整操作。完成后按 F8 停止录制，并输入模板名称保存。</p>
+        </section>
+
+        <section class="panel">
+          <h2><span class="stepNo">2</span>模板列表</h2>
+          <div class="actions">
+            <button id="refreshBtn">刷新列表</button>
+          </div>
+          <div id="macroList" class="macroList" role="listbox" aria-label="模板列表"></div>
+          <p id="templateHint" class="hint">这里自动读取固定目录 macros 下的 JSON 模板。点击某个模板后，会自动加载为当前执行模板。</p>
+        </section>
+
+        <section class="panel">
+          <h2><span class="stepNo">3</span>执行模板</h2>
+          <label class="field checkbox">
+            <input id="infiniteLoop" type="checkbox" />
+            <span>无限循环</span>
+          </label>
+          <label class="field">
+            <span>循环次数</span>
+            <input id="loopCount" type="number" min="1" step="1" value="1" />
+          </label>
+          <label class="field">
+            <span>步骤间隔（秒）</span>
+            <input id="stepIntervalSeconds" type="number" min="0" step="0.1" value="3" />
+          </label>
+          <div class="actions">
+            <button id="playBtn" class="primary">启动执行</button>
+            <button id="stopPlayBtn" class="danger">停止执行</button>
+          </div>
+          <p class="hint">先选择模板，再设置循环次数和步骤间隔。间隔按秒计算，用来适应网站加载和网络波动。</p>
+        </section>
+
+        <section class="panel summaryPanel">
+          <h2>当前模板确认</h2>
+          <dl class="stats">
+            <div><dt>名称</dt><dd id="currentName">-</dd></div>
+            <div><dt>动作数</dt><dd id="actionCount">0</dd></div>
+            <div><dt>总时长</dt><dd id="duration">0 ms</dd></div>
+            <div><dt>坐标模式</dt><dd id="coordinateMode">screenAbsolute</dd></div>
+          </dl>
+          <p id="readyHint" class="hint strongHint">还没有加载模板。请先录制并保存，或从模板列表加载一个模板。</p>
+        </section>
+      </section>
+
+      <section class="logPanel">
+        <div class="logHeader">
+          <h2>运行日志</h2>
+          <button id="clearLogBtn">清空</button>
+        </div>
+        <pre id="log"></pre>
+      </section>
+
+      <div id="saveModal" class="modalOverlay hidden">
+        <section class="modal">
+          <div class="modalHeader">
+            <h2>保存本次录制</h2>
+            <button id="closeSaveBtn" class="iconButton" type="button">×</button>
+          </div>
+          <p class="hint">模板会固定保存到程序目录下的 macros 文件夹，路径不能修改。</p>
+          <label class="field">
+            <span>模板名称</span>
+            <input id="saveNameInput" type="text" value="new_macro" autocomplete="off" />
+          </label>
+          <div class="actions">
+            <button id="confirmSaveBtn" class="primary">保存并加载</button>
+            <button id="discardSaveBtn" type="button">不保存</button>
+          </div>
+        </section>
+      </div>
+
+      <div id="countdownModal" class="modalOverlay hidden">
+        <section class="modal countdownModal">
+          <div class="modalHeader">
+            <h2 id="countdownTitle">倒计时</h2>
+            <button id="closeCountdownBtn" class="iconButton" type="button">×</button>
+          </div>
+          <div id="countdownNumber" class="countdownNumber">3</div>
+          <p id="countdownMessage" class="hint">请切换到目标窗口。</p>
+          <div class="actions">
+            <button id="cancelCountdownBtn" class="danger" type="button">取消当前操作</button>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script src="./renderer.js"></script>
+  </body>
+</html>

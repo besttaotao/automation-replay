@@ -1,0 +1,12 @@
+node_modules/
+dist/
+logs/
+temp/
+macros/
+
+*.log
+*.tmp
+*.bak
+
+.env
+.env.*
